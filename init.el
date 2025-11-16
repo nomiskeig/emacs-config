@@ -1,14 +1,14 @@
 ;; -- lexial-binding t
-; Set up package.el to work with MELPA
+					; Set up package.el to work with MELPA
 (require 'package)
 (require 'dired)
 (eval-when-compile
   (require 'org)
   (require 'org-agenda)
   (require 'org-capture)
-  ;(require 'pdf-view)
+					;(require 'pdf-view)
   (require 'flymake)
-  ;(require 'magit)
+					;(require 'magit)
   )
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
@@ -28,31 +28,34 @@
 (display-time-mode 1)
 (setq display-time-24hr-format t)
 (setq display-time-default-load-average nil)
- (defface egoge-display-time
-   '((((type x w32 mac))
-      ;; #060525 is the background colour of my default face.
-      (:foreground "#060525" :inherit bold))
-     (((type tty))
-      (:foreground "blue")))
-   "Face used to display the time in the mode line.")
- ;; This causes the current time in the mode line to be displayed in
- ;; `egoge-display-time-face' to make it stand out visually.
- (setq display-time-string-forms
-       '((propertize (concat " " 24-hours ":" minutes " ")
+(defface egoge-display-time
+  '((((type x w32 mac))
+     ;; #060525 is the background colour of my default face.
+     (:foreground "#060525" :inherit bold))
+    (((type tty))
+     (:foreground "blue")))
+  "Face used to display the time in the mode line.")
+;; This causes the current time in the mode line to be displayed in
+;; `egoge-display-time-face' to make it stand out visually.
+(setq display-time-string-forms
+      '((propertize (concat " " 24-hours ":" minutes " ")
  		    'face 'egoge-display-time)))
-  
+
+
 (setq lazy-highlight-cleanup nil)
 (setq lazy-highlight-max-at-a-time nil)
 (use-package nix-mode
   :mode
   ("\\.nix\\'" "\\.nix.in\\'"))
 
- (use-package direnv
+(use-package direnv
   :custom
   (direnv-always-show-summary nil)
   :config
   (direnv-mode 1))
-
+(use-package rust-mode
+  :ensure t)
+(require 'rust-mode)
 (use-package corfu
   :ensure
   t
@@ -67,11 +70,14 @@
   (:map corfu-map
 	("C-j" . corfu-next)
 	("C-k" . corfu-previous)
-    ("RET" . nil)
-  ))
+	("RET" . nil)
+	))
 (use-package cmake-mode
   :ensure
   t)
+
+(use-package org-noter
+  :ensure t)
 (require 'cmake-mode)
 (use-package posframe
   :ensure
@@ -95,15 +101,15 @@
   t)
 
 (use-package timu-spacegrey-theme
-             :ensure
-	     t
-             :config
-             (load-theme 'timu-spacegrey t))
+  :ensure
+  t
+  :config
+  (load-theme 'timu-spacegrey t))
 (use-package vertico
   :bind
   (:map vertico-map
-	      ("C-k" . vertico-previous)
-	      ("C-j" . vertico-next))
+	("C-k" . vertico-previous)
+	("C-j" . vertico-next))
   :init
   (vertico-mode))
 (setq evil-want-keybinding nil)
@@ -119,7 +125,7 @@
 (use-package marginalia
   :bind
   (:map minibuffer-local-map
-	      ("M-A" . marginalia-cycle))
+	("M-A" . marginalia-cycle))
   :init (marginalia-mode))
 (require 'evil)
 (when (require 'evil-collection nil t)
@@ -127,10 +133,10 @@
 (use-package eldoc-box
   :ensure
   t)
- ;:hook (eglot-managed-mode . eldoc-box-hover-mode))
- ; :hook (emacs-lisp-mode . eldoc-box-hover-mode))
- ; :bind (:map emacs-lisp-mode-map
-	    ;  ("K" . eldoc-box-help-at-point)))
+					;:hook (eglot-managed-mode . eldoc-box-hover-mode))
+					; :hook (emacs-lisp-mode . eldoc-box-hover-mode))
+					; :bind (:map emacs-lisp-mode-map
+					;  ("K" . eldoc-box-help-at-point)))
 (setq help-window-select t)
 
 (use-package evil-escape
@@ -154,19 +160,25 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(format-all-show-errors 'never)
+ '(inhibit-startup-screen t)
  '(org-agenda-files '("/home/simon/org/inbox.org"))
  '(package-selected-packages
    '(cmake-mode consult corfu direnv eldoc-box evil-collection
-		evil-escape gcal helpful key-chord lsp-mode lsp-ui
-		magit marginalia nix-mode orderless org-gcal pdf-tools
-		posframe timu-spacegrey-theme vertico)))
+		evil-escape format-all gcal helpful key-chord lsp-mode
+		lsp-ui magit marginalia nix-mode orderless org-gcal
+		org-noter pdf-tools posframe rust-mode
+		timu-spacegrey-theme vertico)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(global-display-line-numbers-mode 1)
+(defun my/display-line-numbers ()
+  (display-line-numbers-mode 1)
+  )
+(add-hook 'prog-mode-hook 'my/display-line-numbers)
 (setq scroll-conservatively 10
       scroll-margin 15)
 (set-frame-font "FiraCode Nerd Font Mono-12" nil t)
@@ -174,12 +186,15 @@
 (setq magit-display-buffer-function
       #'magit-display-buffer-fullframe-status-v1)
 
-;(setq help-window-select t)
+					;(setq help-window-select t)
 (with-eval-after-load 'evil
   (define-key evil-insert-state-map (kbd "C-k") nil))
 (evil-define-key 'normal 'global
   (kbd "<leader>gc")
-            (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
+  (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
+(evil-define-key 'normal 'global
+  (kbd "<leader>gn")
+  (lambda () (interactive) (dired "~/org/notes")))
 
 (evil-define-key 'normal 'global (kbd "<leader>w") #'save-buffer)
 (evil-define-key 'normal 'global (kbd "<leader>gg") #'magit-status)
@@ -196,11 +211,11 @@
 (evil-define-key 'normal 'global (kbd "<leader>hk") #'describe-key)
 (evil-define-key 'normal 'global
   (kbd "<leader>la") #'eglot-code-action-quickfix)
-;(evil-define-key 'normal 'global (kbd "K") #'eldoc-box-help-at-point)
-;(setq eldoc-box-only-multi-line t)
+					;(evil-define-key 'normal 'global (kbd "K") #'eldoc-box-help-at-point)
+					;(setq eldoc-box-only-multi-line t)
 
-;(setq eldoc-box-hover-display-frame-above-point t)
-;(setq eldoc-documentation-strategy #'eldoc-documentation-compose)
+					;(setq eldoc-box-hover-display-frame-above-point t)
+					;(setq eldoc-documentation-strategy #'eldoc-documentation-compose)
 
 
 (with-eval-after-load 'help
@@ -225,11 +240,11 @@
 (evil-define-key 'normal 'global
   (kbd "<leader>d")
   (lambda () (interactive)
-      (dired (file-name-directory buffer-file-name))))
+    (dired (file-name-directory buffer-file-name))))
 (evil-define-key 'normal 'global
   (kbd "<leader>D")
   (lambda () (interactive)
-      (dired-other-window (file-name-directory buffer-file-name))))
+    (dired-other-window (file-name-directory buffer-file-name))))
 (defun my/compile-in-project-root ()
   "Run compile from project root."
   (interactive)
@@ -237,8 +252,8 @@
       ((default-directory
 	(or  (project-root (project-current t)) default-directory)))
     (call-interactively 'compile)))
-;(setq eldoc-documentation-functions
-;      (mapcar #'my/wrap-eldoc-provider eldoc-documentation-functions))
+					;(setq eldoc-documentation-functions
+					;      (mapcar #'my/wrap-eldoc-provider eldoc-documentation-functions))
 (setq consult-fd-args "fd --hidden --full-path")
 (evil-define-key 'normal 'global
   (kbd "<leader>F") (lambda () (interactive) (project-find-file)))
@@ -248,19 +263,18 @@
 (evil-define-key 'normal 'global
   (kbd "<leader>f") (lambda () (interactive) (consult-ripgrep)))
 (evil-define-key 'normal 'global
-  (kbd "<leader>jc") #'my/compile-in-project-root)
+  (kbd "<leader>jc") #'my/compile)
 (evil-define-key 'normal 'global
   (kbd "<leader>jt") #'eshell)
 (evil-define-key 'normal 'global (kbd "<leader>jr") #'recompile)
 (evil-define-key 'normal 'gloabl
   (kbd "<leader>jk") #'kill-compilation)
 (evil-define-key 'normal 'global (kbd "C-.") #'completion-at-point)
-
 (defun my/compile-minibuffer-keys ()
   "Use C-j/C-k to scroll through the compile history"
   (when (eq this-command 'compile)
-    ;(local-set-key (kbd "C-k") #'previous-history-element)
-    ;(local-set-key (kbd "C-j") #'next-history-element)))
+					;(local-set-key (kbd "C-k") #'previous-history-element)
+					;(local-set-key (kbd "C-j") #'next-history-element)))
     ))
 
 (add-hook 'minibuffer-setup-hook #'my/compile-minibuffer-keys)
@@ -273,16 +287,16 @@
   (evil-define-key 'normal dired-mode-map
     (kbd "x") #'dired-do-flagged-delete)
   (evil-define-key 'normal dired-mode-map
-    (kbd "u") #'dired-unmark 
-  (evil-define-key 'normal dired-mode-map
-    (kbd "g") #'revert-buffer)
-  (evil-define-key 'normal dired-mode-map
-    (kbd "r") #'dired-do-rename)
-  (evil-define-key 'normal dired-mode-map
-    (kbd "a") #'find-file)))
-  ;  (kbd "o") (message "pressed o")))
+    (kbd "u") #'dired-unmark
+    (evil-define-key 'normal dired-mode-map
+      (kbd "g") #'revert-buffer)
+    (evil-define-key 'normal dired-mode-map
+      (kbd "r") #'dired-do-rename)
+    (evil-define-key 'normal dired-mode-map
+      (kbd "a") #'find-file)))
+					;  (kbd "o") (message "pressed o")))
 
-(add-to-list 'display-buffer-alist'
+(add-to-list 'display-buffer-alist
              '("\\*compilation\\*"
                (display-buffer-reuse-window display-buffer-at-bottom)
                (window-height . 0.3)
@@ -290,8 +304,8 @@
                ))
 
 (add-hook 'compilation-start-hook
-            (lambda (buf) (switch-to-buffer-other-window buf)))
-  (add-hook 'compilation-mode-hook
+          (lambda (buf) (switch-to-buffer-other-window buf)))
+(add-hook 'compilation-mode-hook
           (lambda ()
             (setq-local shell-file-name (executable-find "zsh"))
             (setq-local shell-command-switch "-ic")))
@@ -317,37 +331,37 @@
   "Show function help in popup"
   (interactive)
   (let (
-	      (name "*Symbol info*")
-	      (sym (symbol-at-point))
-	      )
+	(name "*Symbol info*")
+	(sym (symbol-at-point))
+	)
     (posframe-show
      name
      :string (with-current-buffer eldoc--doc-buffer (buffer-string))
      :position (point)
-		  
+
      :width 80
      :height 20
 
      )
     (message name)
-    ;(add-hook 'pre-command-hook (lambda () (my/kill-function-popup name)))
-  (set-tran () sient-map
-   (let ((map (make-sparse-keymap)))
-     (define-key map (kbd "j")
-		 (lambda () (interactive)
-		   (posframe-delete name)
-		   (call-interactively #'evil-next-line))
-     (define-key map (kbd "k")
-		 (lambda () (interactive) (posframe-delete name)))
-     (define-key map (kbd "h")
-		 (lambda () (interactive) (posframe-delete name)))
-     (define-key map (kbd "l")
-		 (lambda () (interactive) (posframe-delete name)))
-     map))
+					;(add-hook 'pre-command-hook (lambda () (my/kill-function-popup name)))
+    (set-tran () sient-map
+	      (let ((map (make-sparse-keymap)))
+		(define-key map (kbd "j")
+			    (lambda () (interactive)
+			      (posframe-delete name)
+			      (call-interactively #'evil-next-line))
+			    (define-key map (kbd "k")
+					(lambda () (interactive) (posframe-delete name)))
+			    (define-key map (kbd "h")
+					(lambda () (interactive) (posframe-delete name)))
+			    (define-key map (kbd "l")
+					(lambda () (interactive) (posframe-delete name)))
+			    map))
 
-    )))
+	      )))
 
-;(evil-define-key 'normal 'global (kbd "K") #'my/describe-function-popup)
+					;(evil-define-key 'normal 'global (kbd "K") #'my/describe-function-popup)
 
 
 
@@ -383,10 +397,10 @@
 	))))
 
 ;;(add-hook 'post-command-hook
- ;;         (lambda ()
-           ; (posframe-hide " *flymake*")
-  ;;          (remove-hook 'post-command-hook #'posframe-hide))
-   ;;       nil t)))))
+;;         (lambda ()
+					; (posframe-hide " *flymake*")
+;;          (remove-hook 'post-command-hook #'posframe-hide))
+;;       nil t)))))
 
 ;; If you use Evil, a nice normal-mode binding for programming buffers:
 (with-eval-after-load 'evil
@@ -408,23 +422,59 @@
         (load-directory fullpath))
        ((and (eq isdir nil) (string= (substring path -3) ".el"))
         (load (file-name-sans-extension fullpath)))))))
-;(evil-set-initial-state 'pdf-view-mode 'normal)
-(evil-set-initial-state 'pdf-view-mode 'emacs)
+(evil-set-initial-state 'pdf-view-mode 'normal)
+(evil-set-initial-state 'compilation-mode 'normal)
+					;(evil-set-initial-state 'pdf-view-mode 'emacs)
 (with-eval-after-load 'pdf-view
-  (evil-define-key 'emacs pdf-view-mode-map
+  (evil-define-key 'normal pdf-view-mode-map
     (kbd "j") 'pdf-view-next-line-or-next-page
     (kbd "k") 'pdf-view-previous-line-or-previous-page
     (kbd "h") 'image-backward-hscroll
-   (kbd "l") 'image-forward-hscroll
+    (kbd "l") 'image-forward-hscroll
+    (kbd "+") (lambda () (interactive) (pdf-view-enlarge 1.25))
+    (kbd "-") (lambda () (interactive) (pdf-view-shrink 1.25))
+    (kbd "H") 'pdf-view-fit-height-to-window
+    (kbd "W") 'pdf-view-fit-width-to-window
+    (kbd "P") 'pdf-view-fit-page-to-window
     (kbd "gg") 'pdf-view-first-page
     (kbd "G")  'pdf-view-last-page))
 
+(add-hook 'pdf-view-mode 'pdf-view-fit-page-to-window)
+(with-eval-after-load 'org
+  (evil-define-key 'normal org-mode-map
+    (kbd "<tab>") 'org-cycle
+    ))
 
+(evil-define-key 'normal compilation-mode-map
+  (kbd "q") 'evil-window-delete)
+
+(evil-define-key 'normal compilation-mode-map
+  (kbd "n") 'next-error)
+(evil-define-key 'normal compilation-mode-map
+  (kbd "p") 'previous-error)
 (load-directory "~/.emacs.d/config")
 (setopt treesit-font-lock-level 5)
+					;(setq compilation-auto-jump-to-first-error t)
+(with-eval-after-load 'compile
+  (setq compilation-scroll-output 'first-error)
+  (setq compilation-skip-threshold 2)
+  )
 
-;(global-treesit-mode)
-;(add-hook 'treesit-after-on-hook #'treesit-hl-mode)
+
+					;(global-treesit-mode)
+					;(add-hook 'treesit-after-on-hook #'treesit-hl-mode)
 (add-to-list  'custom-theme-load-path "~/.emacs.d/config/")
 (load-theme 'onedark-darker t)
 
+(use-package format-all
+  :commands format-all-mode
+  :config
+  (setq-default format-all-formatters
+		'(("Rust"  (rustfmt)))))
+
+(defun my/compile ()
+  (interactive)
+  (let* ((proj (project-current))
+	 (default-directory (project-root proj)))
+    (call-interactively 'compile)))
+(evil-define-key 'normal 'global (kbd "<leader>lf") 'format-all-region-or-buffer)
