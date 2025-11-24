@@ -160,6 +160,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(blink-cursor-mode nil)
  '(format-all-show-errors 'never)
  '(inhibit-startup-screen t)
  '(org-agenda-files '("/home/simon/org/inbox.org"))
@@ -376,17 +377,29 @@
         (message "No diagnostics on this line.")
       (let ((msg (mapconcat
                   (lambda (d)
+		    (let* ((type (flymake-diagnostic-type d))
+			   (text (flymake-diagnostic-text d))
+			   (face (cond
+				  ((eq type :error) 'error)
+				  ((eq type :warning) 'warning)
+				  ((eq type :note) 'warning)))
+			   (type-str (propertize (symbol-name type)
+				   'face face))
+			   (text-str (propertize text
+				   'face face)))
                     (format "%s: %s"
-                            (flymake-diagnostic-type d)
-                            (flymake-diagnostic-text d)))
+                            type-str
+                            text-str)))
                   diags
                   "\n"))
 	    cleanup-fn)
         (posframe-show " *flymake*"
                        :string msg
                        :position (point)
-		       :background-color "#787878"
-		       :foreground-color "#ff0000"
+		       :background-color "#1f2329"
+		       ;:foreground-color "#ff00ff"
+		       :border-color "#ffffff"
+		       :border-width 1
                        )
 
 	(setq cleanup-fn
@@ -478,3 +491,12 @@
 	 (default-directory (project-root proj)))
     (call-interactively 'compile)))
 (evil-define-key 'normal 'global (kbd "<leader>lf") 'format-all-region-or-buffer)
+
+(defun my/split-window-right ()
+  (interactive)
+  (split-window-right)
+  (other-window 1))
+
+
+(evil-define-key 'normal 'global (kbd "<leader>v") #'my/split-window-right)
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)

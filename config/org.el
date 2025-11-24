@@ -20,9 +20,7 @@
   (kbd "<leader>ge")
              (lambda () (interactive) (find-file "~/org/errands.org")))
 (evil-define-key 'normal 'global
-  (kbd "<leader>vt") (lambda () (interactive) (org-agenda nil "t")))
-(evil-define-key 'normal 'global
-  (kbd "<leader>vo") (lambda () (interactive) (org-agenda nil " ")))
+  (kbd "<leader>ga") (lambda () (interactive) (org-agenda nil " ")))
 (evil-define-key 'normal 'global (kbd "<leader>c") #'org-capture)
 (with-eval-after-load 'org-agenda
   (evil-define-key 'emacs org-agenda-mode-map
