@@ -174,7 +174,7 @@
  '(blink-cursor-mode nil)
  '(format-all-show-errors 'never)
  '(inhibit-startup-screen t)
- '(org-agenda-files '("/home/simon/org/inbox.org"))
+ '(org agenda-files '("/home/simon/org/inbox.org"))
  '(package-selected-packages
    '(cmake-mode consult corfu direnv eldoc-box evil-collection
 		evil-escape gcal helpful key-chord lsp-mode lsp-ui
@@ -511,3 +511,7 @@
 
 (evil-define-key 'normal 'global (kbd "<leader>v") #'my/split-window-right)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(with-eval-after-load 'ediff
+  (add-hook 'ediff-startup-hook
+	    (lambda ()
+	      (evil-emacs-state ediff-control-buffer))))
