@@ -76,6 +76,17 @@
   :ensure
   t)
 
+(use-package org-download
+  :ensure t
+  :after org
+  :hook 
+  (org-mode . org-download-enable)
+  :custom
+  (org-download-method 'directory)
+  (org-download-image-dir "images")
+  (org-download-heading-lvl nil)
+ (org-download-timestamp "%Y%m%d-%H%M%S_"))
+	    
 (use-package org-noter
   :ensure t)
 (require 'cmake-mode)
@@ -166,9 +177,9 @@
  '(org-agenda-files '("/home/simon/org/inbox.org"))
  '(package-selected-packages
    '(cmake-mode consult corfu direnv eldoc-box evil-collection
-		evil-escape format-all gcal helpful key-chord lsp-mode
-		lsp-ui magit marginalia nix-mode orderless org-gcal
-		org-noter pdf-tools posframe rust-mode
+		evil-escape gcal helpful key-chord lsp-mode lsp-ui
+		magit marginalia nix-mode orderless org-download
+		org-gcal org-noter pdf-tools posframe rust-mode
 		timu-spacegrey-theme vertico)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

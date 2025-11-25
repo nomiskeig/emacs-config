@@ -1,5 +1,5 @@
 ;;; config/org.el --- -*- lexical-binding: t; -*-
-;;; Commentary:
+;;; Commentary 
 
 ; Contains code and ideas from https://github.com/jethrokuan/dots/blob/master/.doom.d/config.el
 ;;; Ensure that the window layout persists when the agenda is opened
@@ -201,7 +201,7 @@
          'org-meta-line
          'org-document-info-keyword)))
 
-(add-hook 'org-mode-hook #'jethro/style-org)
+;(add-hook 'org-mode-hook #'jethro/style-org)
 
 (defun my/agenda-todo-prefix ()
     "Show the file name if there is no parent and breadcrumbs if there are parents"
