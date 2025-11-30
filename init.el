@@ -19,7 +19,7 @@
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
-;;(package-refresh-contents)
+;(package-refresh-contents)
 (require 'use-package)
 (setq use-package-always-ensure t)
 ;; (add-to-list 'load-path "~/.emacs.d/themes/")
@@ -48,11 +48,8 @@
   :mode
   ("\\.nix\\'" "\\.nix.in\\'"))
 
-(use-package direnv
-  :custom
-  (direnv-always-show-summary nil)
-  :config
-  (direnv-mode 1))
+(use-package envrc
+  :hook (after-init . envrc-global-mode))
 (use-package rust-mode
   :ensure t)
 (require 'rust-mode)
@@ -174,13 +171,9 @@
  '(blink-cursor-mode nil)
  '(format-all-show-errors 'never)
  '(inhibit-startup-screen t)
+ '(lsp-idle-delay 0.5)
  '(org-agenda-files '("/home/simon/org/inbox.org"))
- '(package-selected-packages
-   '(cmake-mode consult corfu direnv eldoc-box evil-collection
-		evil-escape format-all gcal helpful key-chord lsp-mode
-		lsp-ui magit marginalia nix-mode orderless
-		org-download org-gcal org-noter pdf-tools posframe
-		rust-mode timu-spacegrey-theme vertico)))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -252,7 +245,8 @@
 (evil-define-key 'normal 'global
   (kbd "<leader>d")
   (lambda () (interactive)
-    (dired (file-name-directory buffer-file-name))))
+    ;(dired (file-name-directory buffer-file-name))))
+    (my/dired-explorer)))
 (evil-define-key 'normal 'global
   (kbd "<leader>D")
   (lambda () (interactive)
@@ -295,6 +289,8 @@
   (evil-define-key 'normal dired-mode-map
     (kbd "o") #'dired-find-file)
   (evil-define-key 'normal dired-mode-map
+    (kbd "v") #'dired-find-file-other-window)
+  (evil-define-key 'normal dired-mode-map
     (kbd "d") #'dired-flag-file-deletion)
   (evil-define-key 'normal dired-mode-map
     (kbd "x") #'dired-do-flagged-delete)
@@ -314,6 +310,13 @@
                (window-height . 0.3)
                (inhbit-same-window . nil)
                ))
+(add-to-list 'display-buffer-alist
+             '("\\*xref\\*"
+               (display-buffer-reuse-window display-buffer-at-bottom)
+               (window-height . 0.3)
+               (inhbit-same-window . nil)
+               ))
+
 
 (add-hook 'compilation-start-hook
           (lambda (buf) (switch-to-buffer-other-window buf)))
@@ -517,3 +520,40 @@
 	      (evil-emacs-state ediff-control-buffer))))
 
 (setq-default display-line-numbers-width 4)
+
+(electric-pair-mode 1)
+(use-package dired-subtree
+  :after dired)
+(with-eval-after-load 'dired
+  (evil-define-key 'normal dired-mode-map (kbd "TAB") 'dired-subtree-toggle))
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
+(setq dired-kill-when-opening-new-dired-buffer nil)
+(defun my/dired-explorer ()
+  "Open or reuse a Dired buffer for the project root."
+  (interactive)
+  (let* ((root (or (when-let ((pr (project-current))) (project-root pr))
+                   default-directory))
+         (buf  (dired-noselect root)))
+    (switch-to-buffer buf)))
+
+(setq dired-subtree-line-prefix "    ")
+(setq dired-omit-files
+      "*\\~"
+      )
+(add-hook 'dired-mode-hook #'dired-omit-mode)
+(with-eval-after-load 'dired-subtree
+  (defun my/dired-subtree-apply-omit (&rest _)
+    (when (bound-and-true-p dired-omit-mode)
+      (let ((inhibit-read-only t))
+        (save-excursion
+          (dired-omit-expunge)))))
+  (advice-add 'dired-subtree-insert :after #'my/dired-subtree-apply-omit))
+
+(evil-define-key 'normal xref--button-map (kbd "q") 'quit-window)
+(evil-define-key 'normal xref--button-map (kbd "o") 'xref-quit-and-goto-xref)
+
+(setq compilation-ask-about-save nil)
+

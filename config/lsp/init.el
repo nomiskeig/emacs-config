@@ -1,4 +1,4 @@
-;; see https://www.gnu.org/software/emacs/manual/html_mono/eglot.html#Setting-Up-LSP-Servers
+
 ;(add-hook 'emacs-lisp-mode-hook #'flymake-mode)
 ;(require 'treesit)
 ;(setq treesit-language-source-alist

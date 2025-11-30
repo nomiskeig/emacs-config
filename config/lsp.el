@@ -55,7 +55,7 @@
    (add-hook 'pre-command-hook lsp-ui-cleanup-fn t))
    )
 (evil-define-key 'normal 'global (kbd "K") #'my/show-lsp-ui)
-
+(evil-define-key 'normal 'global (kbd "gi") #'lsp-find-implementation)
 (with-eval-after-load 'lsp-mode
   (evil-define-key 'normal 'global (kbd "K") #'my/show-lsp-ui)
   (evil-define-key 'normal 'global (kbd "<leader>la") #'lsp-execute-code-action))

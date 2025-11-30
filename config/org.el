@@ -1,4 +1,4 @@
-;;; config/org.el --- -*- lexical-binding: t; -*-
+;; config/org.el --- -*- lexical-binding: t; -*-
 ;;; Commentary 
 
 ; Contains code and ideas from https://github.com/jethrokuan/dots/blob/master/.doom.d/config.el
