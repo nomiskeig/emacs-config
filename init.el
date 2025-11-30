@@ -174,13 +174,13 @@
  '(blink-cursor-mode nil)
  '(format-all-show-errors 'never)
  '(inhibit-startup-screen t)
- '(org agenda-files '("/home/simon/org/inbox.org"))
+ '(org-agenda-files '("/home/simon/org/inbox.org"))
  '(package-selected-packages
    '(cmake-mode consult corfu direnv eldoc-box evil-collection
-		evil-escape gcal helpful key-chord lsp-mode lsp-ui
-		magit marginalia nix-mode orderless org-download
-		org-gcal org-noter pdf-tools posframe rust-mode
-		timu-spacegrey-theme vertico)))
+		evil-escape format-all gcal helpful key-chord lsp-mode
+		lsp-ui magit marginalia nix-mode orderless
+		org-download org-gcal org-noter pdf-tools posframe
+		rust-mode timu-spacegrey-theme vertico)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -515,3 +515,5 @@
   (add-hook 'ediff-startup-hook
 	    (lambda ()
 	      (evil-emacs-state ediff-control-buffer))))
+
+(setq-default display-line-numbers-width 4)
