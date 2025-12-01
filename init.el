@@ -555,5 +555,12 @@
 (evil-define-key 'normal xref--button-map (kbd "q") 'quit-window)
 (evil-define-key 'normal xref--button-map (kbd "o") 'xref-quit-and-goto-xref)
 
+(evil-define-key 'normal 'global (kbd "<leader>b") 'consult-buffer)
+(evil-define-key 'normal 'global (kbd "<leader>k") 'consult-recent-file)
+
 (setq compilation-ask-about-save nil)
 
+
+(require 'recentf)
+(recentf-mode 1)
+(add-hook 'buffer-list-update-hook #'recentf-track-opened-file)
