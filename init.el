@@ -69,6 +69,11 @@
 	("C-k" . corfu-previous)
 	("RET" . nil)
 	))
+
+(use-package cape
+  :init
+  (add-hook 'completion-at-point-functions #'cape-file)
+  )
 (use-package cmake-mode
   :ensure
   t)
@@ -169,11 +174,20 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
+ '(citar-file-open-functions
+   '(("pdf" . citar-file-open-external)
+     ("html" . citar-file-open-external) (t . find-file)))
+ '(citar-open-entry-function 'citar-open-entry-in-zotero)
  '(format-all-show-errors 'never)
  '(inhibit-startup-screen t)
  '(lsp-idle-delay 0.5)
  '(org-agenda-files '("/home/simon/org/inbox.org"))
- '(package-selected-packages nil))
+ '(package-selected-packages
+   '(cape citar cmake-mode consult corfu dired-subtree direnv eldoc-box
+	  envrc evil-collection evil-escape format-all lsp-ui magit
+	  marginalia nerd-icons-dired nix-mode orderless org-download
+	  org-noter org-ref pdf-tools posframe rust-mode
+	  timu-spacegrey-theme vertico zotxt)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -564,3 +578,24 @@
 (require 'recentf)
 (recentf-mode 1)
 (add-hook 'buffer-list-update-hook #'recentf-track-opened-file)
+
+
+
+(use-package citar
+  :hook
+  (org-mote . citar-capf-setup)
+  :custom
+  (citar-bibliography '("~/org/notes/refs.bib")))
+
+(setq citar-notes-paths '("~/org/notes/literature/"))
+
+
+
+
+
+
+(evil-define-key 'normal 'global (kbd "<leader>ac") 'citar-insert-citation)
+
+(evil-define-key 'normal 'global (kbd "<leader>on") 'citar-open-note)
+(evil-define-key 'normal 'global (kbd "<leader>of") 'citar-open-files)
+(evil-define-key 'normal 'global (kbd "<leader>oe") 'citar-open-entry)
