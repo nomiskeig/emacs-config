@@ -183,11 +183,12 @@
  '(lsp-idle-delay 0.5)
  '(org-agenda-files '("/home/simon/org/inbox.org"))
  '(package-selected-packages
-   '(cape citar cmake-mode consult corfu dired-subtree direnv eldoc-box
-	  envrc evil-collection evil-escape format-all lsp-ui magit
-	  marginalia nerd-icons-dired nix-mode orderless org-download
-	  org-noter org-ref pdf-tools posframe rust-mode
-	  timu-spacegrey-theme vertico zotxt)))
+   '(cape citar-org-roam cmake-mode consult corfu dired-subtree direnv
+	  eldoc-box envrc evil-collection evil-escape format-all
+	  lsp-ui magit marginalia nerd-icons-dired nix-mode orderless
+	  org-download org-journal org-modern org-noter org-ref
+	  pdf-tools posframe rust-mode timu-spacegrey-theme vertico
+	  zotxt)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -585,7 +586,11 @@
   :hook
   (org-mote . citar-capf-setup)
   :custom
-  (citar-bibliography '("~/org/notes/refs.bib")))
+  (citar-bibliography '("~/org/notes/refs.bib"))
+  (org-cite-insert-processor 'citar)
+  (org-cite-follow-processor 'citar)
+  (org-cite-activate-processor 'citar)
+  )
 
 (setq citar-notes-paths '("~/org/notes/literature/"))
 
@@ -596,6 +601,10 @@
 
 (evil-define-key 'normal 'global (kbd "<leader>ac") 'citar-insert-citation)
 
-(evil-define-key 'normal 'global (kbd "<leader>on") 'citar-open-note)
+(evil-define-key 'normal 'global (kbd "<leader>on") 'citar-open-notes)
 (evil-define-key 'normal 'global (kbd "<leader>of") 'citar-open-files)
 (evil-define-key 'normal 'global (kbd "<leader>oe") 'citar-open-entry)
+
+(evil-define-key 'normal 'global (kbd "<leader>oo") 'org-open-at-point)
+
+(global-visual-line-mode 1)

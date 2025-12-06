@@ -245,3 +245,63 @@ With C-u, match the absolute path; otherwise match the basename."
   (defun my/org-save-after-refile (&rest _)
     (org-save-all-org-buffers))
   (advice-add 'org-refile :after #'my/org-save-after-refile))
+
+
+
+(use-package org-modern)
+;; Option 1: Per buffer
+(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+(add-hook 'org-mode-hook #'org-modern-mode)
+
+(setq org-startup-indented t)
+;(use-package org-modern-indent
+;  :config
+;  (add-hook 'org-mode-hook #'org-modern-indent-mode 90)
+;  )
+
+(use-package org-roam)
+(setq org-roam-directory (file-truename "~/org/zettelkasten"))
+(org-roam-db-autosync-mode)
+
+(use-package citar-org-roam
+  :after (citar org-roam)
+  :config (citar-org-roam-mode))
+(setq citar-org-roam-note-title-template "${author} - ${title}")
+(setq org-roam-capture-templates
+      '(("p" "project" plain
+         "%?"
+         :target
+         (file+head
+          "%<%Y%m%d%H%M%S>-${slug}.org"
+          "#+title: ${note-title}\n")
+         :unnarrowed t)
+        ("n" "literature note" plain
+         "%?"
+         :target
+         (file+head
+          "%(expand-file-name (or citar-org-roam-subdir \"\") org-roam-directory)/literature/${citar-citekey}.org"
+          "#+title: ${citar-citekey} (${citar-date}). ${note-title}.\n#+created: %U\n\n\n")
+         :unnarrowed t)))
+(setq citar-org-roam-capture-template-key "n")
+(setq org-roam-dailies-directory "daily/")
+;(use-package org-journal
+;  :bind
+;  ("C-c n j" . org-journal-new-entry)
+;  :custom
+;  (org-journal-date-prefix "#+title: ")
+;  (org-journal-file-format "%Y-%m-%d.org")
+;  (org-journal-dir (file-truename "~/org/zettelkasten/journal"))
+;  (org-journal-file-type 'daily)
+;  (org-journal-date-format "%A, %d %B %Y"))
+
+;(defun my/org-journal-find-location ()
+  ;; Open today's journal, but specify a non-nil prefix argument in order to
+  ;; inhibit inserting the heading; org-capture will insert the heading.
+;  (org-journal-new-entry t)
+;  (unless (eq org-journal-file-type 'daily)
+;    (org-narrow-to-subtree))
+;  (goto-char (point-max)))
+
+;(add-to-list 'org-capture-templates '("j" "Journal entry" plain (function my/org-journal-find-location)
+;                               "** %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
+;                                ))
