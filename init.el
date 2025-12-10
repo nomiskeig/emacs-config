@@ -187,8 +187,8 @@
 	  eldoc-box envrc evil-collection evil-escape format-all
 	  lsp-ui magit marginalia nerd-icons-dired nix-mode orderless
 	  org-download org-journal org-modern org-noter org-ref
-	  pdf-tools posframe rust-mode timu-spacegrey-theme vertico
-	  zotxt)))
+	  org-roam pdf-tools posframe rust-mode timu-spacegrey-theme
+	  vertico zotxt)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
