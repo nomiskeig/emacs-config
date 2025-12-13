@@ -16,6 +16,7 @@
 (add-to-list 'package-archives
 	     '("melpa-stable" . "https://stable.melpa.org/packages/")
 	     t)
+(setenv "LSP_USE_PLISTS" "true")
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -122,7 +123,10 @@
   :bind
   (:map vertico-map
 	("C-k" . vertico-previous)
-	("C-j" . vertico-next))
+	("C-j" . vertico-next)
+	("c-i" . vertico-insert)
+	)
+
   :init
   (vertico-mode))
 (setq evil-want-keybinding nil)
@@ -178,17 +182,18 @@
    '(("pdf" . citar-file-open-external)
      ("html" . citar-file-open-external) (t . find-file)))
  '(citar-open-entry-function 'citar-open-entry-in-zotero)
+ '(electric-indent-mode t)
  '(format-all-show-errors 'never)
  '(inhibit-startup-screen t)
- '(lsp-idle-delay 0.5)
+ '(lsp-idle-delay 0.3)
  '(org-agenda-files '("/home/simon/org/inbox.org"))
  '(package-selected-packages
    '(cape citar-org-roam cmake-mode consult corfu dired-subtree direnv
 	  eldoc-box envrc evil-collection evil-escape format-all
-	  lsp-ui magit marginalia nerd-icons-dired nix-mode orderless
-	  org-download org-journal org-modern org-noter org-ref
-	  org-roam pdf-tools posframe rust-mode timu-spacegrey-theme
-	  vertico zotxt)))
+	  lsp-mode lsp-ui lv magit marginalia markdown-mode
+	  nerd-icons-dired nix-mode orderless org-download org-journal
+	  org-modern org-noter org-ref pdf-tools posframe rust-mode
+	  spinner timu-spacegrey-theme vertico zotxt)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -288,7 +293,7 @@
 (evil-define-key 'normal 'global
   (kbd "<leader>jt") #'eshell)
 (evil-define-key 'normal 'global (kbd "<leader>jr") #'recompile)
-(evil-define-key 'normal 'gloabl
+(evil-define-key 'normal 'global
   (kbd "<leader>jk") #'kill-compilation)
 (evil-define-key 'normal 'global (kbd "C-.") #'completion-at-point)
 (defun my/compile-minibuffer-keys ()
@@ -608,3 +613,5 @@
 (evil-define-key 'normal 'global (kbd "<leader>oo") 'org-open-at-point)
 
 (global-visual-line-mode 1)
+
+(setq lsp-diagnostics-provider :flymake)

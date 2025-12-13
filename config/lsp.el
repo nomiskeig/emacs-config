@@ -21,7 +21,6 @@
   :commands lsp
   :custom
   (lsp-enable-symbol-highlighting nil)
-  (lsp-semantic-tokens-enable t)
   (lsp-idle-dely 0.2)
   )
 ; This does not seem to work
@@ -59,3 +58,10 @@
 (with-eval-after-load 'lsp-mode
   (evil-define-key 'normal 'global (kbd "K") #'my/show-lsp-ui)
   (evil-define-key 'normal 'global (kbd "<leader>la") #'lsp-execute-code-action))
+;; performance things
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq lsp-inlay-hint-enable t)
+(add-hook 'lsp-mode-hook #'lsp-inlay-hints-mode)
+
+(setq lsp-rust-analyzer-display-parameter-hints t)

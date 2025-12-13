@@ -1,27 +1,27 @@
 ;; config/org.el --- -*- lexical-binding: t; -*-
-;;; Commentary 
+;;; Commentary
 
-; Contains code and ideas from https://github.com/jethrokuan/dots/blob/master/.doom.d/config.el
+					; Contains code and ideas from https://github.com/jethrokuan/dots/blob/master/.doom.d/config.el
 ;;; Ensure that the window layout persists when the agenda is opened
 (setq org-agenda-restore-windows-after-quit t)
-;(defvar my/agenda-window-config nil
-  ; "The window configuration when opening the agenda view")
-;(advice-add 'org-agenda :before (lambda (&rest _)  (setq my/agenda-window-config (current-window-configuration))) )
-;(add-hook 'org-agenda-quit-hook (lambda () (when (window-configuration-p my/agenda-window-config) (set-window-configuration my/agenda-window-config))))
+					;(defvar my/agenda-window-config nil
+					; "The window configuration when opening the agenda view")
+					;(advice-add 'org-agenda :before (lambda (&rest _)  (setq my/agenda-window-config (current-window-configuration))) )
+					;(add-hook 'org-agenda-quit-hook (lambda () (when (window-configuration-p my/agenda-window-config) (set-window-configuration my/agenda-window-config))))
 ;;; Keymaps
 (evil-define-key 'normal 'global
   (kbd "<leader>gi")
-             (lambda () (interactive) (find-file "~/org/inbox.org")))
+  (lambda () (interactive) (find-file "~/org/inbox.org")))
 (evil-define-key 'normal 'global
   (kbd "<leader>gp")
-             (lambda () (interactive)
-	       (find-file "~/org/projects.org")))
+  (lambda () (interactive)
+    (find-file "~/org/projects.org")))
 (evil-define-key 'normal 'global
   (kbd "<leader>ge")
-             (lambda () (interactive) (find-file "~/org/errands.org")))
+  (lambda () (interactive) (find-file "~/org/errands.org")))
 (evil-define-key 'normal 'global
-  (kbd "<leader>ga") (lambda () (interactive) (org-agenda nil " ")))
-(evil-define-key 'normal 'global (kbd "<leader>c") #'org-capture)
+  (kbd "<leader>oa") (lambda () (interactive) (org-agenda nil " ")))
+					;(evil-define-key 'normal 'global (kbd "<leader>c") #'org-capture)
 (with-eval-after-load 'org-agenda
   (evil-define-key 'emacs org-agenda-mode-map
     (kbd "j") #'org-agenda-next-line
@@ -30,7 +30,7 @@
     (kbd "d") #'org-agenda-kill
     (kbd "u") #'org-agenda-undo
     ))
-    ;(kbd "gd") #'org-agenda-switch-to  ))
+					;(kbd "gd") #'org-agenda-switch-to  ))
 
 (with-eval-after-load 'org-agenda
   (evil-define-key 'normal org-agenda-mode-map
@@ -38,15 +38,15 @@
 
 ;;; Config
 ;;(setq org-capture-templates
- ;     '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-	; "** TODO %? %i \n Timestamp: %T, Source: %a")
-	;("s" "Subtask"  entry (function (lambda () (point)))
-	; "*** TODO %? %i \n Timestamp: %T, Source: %a")
-	;("E" "Errrand" entry (file+headline "~/org/errands.org" "Errands")
-	; "** TODO %? %i \n Timestamp: %T")
-	;("i" "Inbox" entry (file "~/org/inbox.org")
-	; "* %i")
- 	;'))
+					;     '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+					; "** TODO %? %i \n Timestamp: %T, Source: %a")
+					;("s" "Subtask"  entry (function (lambda () (point)))
+					; "*** TODO %? %i \n Timestamp: %T, Source: %a")
+					;("E" "Errrand" entry (file+headline "~/org/errands.org" "Errands")
+					; "** TODO %? %i \n Timestamp: %T")
+					;("i" "Inbox" entry (file "~/org/inbox.org")
+					; "* %i")
+					;'))
 (setq jethro/org-agenda-directory "~/org/todo/")
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "|"
@@ -60,7 +60,7 @@
 
 (setq org-tag-alist
       '((:startgroup . nil) ("@work" . ?w) ("@home" . ?h)
-	("@uni" . ?u) ("@errand" . ?e) (:endgroup . nil)))
+	("@uni" . ?u) ("@errand" . ?e) (@read . ? ) (:endgroup . nil)))
 (setq org-agenda-files
       '("~/org/todo/" "~/org/notes/"))
 (setq org-refile-targets '(("next.org" :level . 0)
@@ -71,8 +71,8 @@
       org-outline-path-complete-in-steps nil)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 (setq org-agenda-window-setup 'only-window)
-		   (setq org-agenda-skip-scheduled-if-done t)
-		   (setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-skip-deadline-if-done t)
 
 (defvar jethro/org-agenda-bulk-process-key ?f
   "Default key for bulk processing inbox items.")
@@ -81,7 +81,7 @@
   "Called in org-agenda-mode, processes all inbox items."
   (interactive)
   (my/org-agenda-bulk-mark-regexp-file "inbox\\.org")
- ; (org-agenda-bulk-mark-regexp "~/org/todo/inbox.org")
+					; (org-agenda-bulk-mark-regexp "~/org/todo/inbox.org")
   (jethro/bulk-process-entries))
 
 (defvar jethro/org-current-effort "1:00"
@@ -164,9 +164,9 @@
          (todo "TODO"
                ((org-agenda-overriding-header "To Refile")
                 (org-agenda-files '(,(concat jethro/org-agenda-directory "inbox.org")))))
-         ;(todo "TODO"
-         ;      ((org-agenda-overriding-header "Emails")
-         ;       (org-agenda-files '(,(concat jethro/org-agenda-directory "emails.org")))))
+					;(todo "TODO"
+					;      ((org-agenda-overriding-header "Emails")
+					;       (org-agenda-files '(,(concat jethro/org-agenda-directory "emails.org")))))
          (todo "NEXT"
                ((org-agenda-overriding-header "In Progress")
                 (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")
@@ -201,19 +201,19 @@
          'org-meta-line
          'org-document-info-keyword)))
 
-;(add-hook 'org-mode-hook #'jethro/style-org)
+					;(add-hook 'org-mode-hook #'jethro/style-org)
 
 (defun my/agenda-todo-prefix ()
-    "Show the file name if there is no parent and breadcrumbs if there are parents"
+  "Show the file name if there is no parent and breadcrumbs if there are parents"
   (let ((x (nth 0 (org-get-outline-path))))
-       (if x
-           (concat "[ " (org-format-outline-path (list x)) " ]")
-	 ; the line below is basically %c, see https://emacs.stackexchange.com/questions/80509/org-agenda-prefix-format-change-file-name
-	;; (file-name-nondirectory (directory-file-name (file-name-directory (buffer-file-name)))))))
-	 (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
+    (if x
+        (concat "[ " (org-format-outline-path (list x)) " ]")
+					; the line below is basically %c, see https://emacs.stackexchange.com/questions/80509/org-agenda-prefix-format-change-file-name
+      ;; (file-name-nondirectory (directory-file-name (file-name-directory (buffer-file-name)))))))
+      (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
 
 (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s") (todo . " %i %-20(my/agenda-todo-prefix)")
-				(tags . " %i %-12:c") (search . " %i %-12:c")))
+				 (tags . " %i %-12:c") (search . " %i %-12:c")))
 (setq org-log-done 'time
       org-log-into-drawer t
       org-log-state-notes-insert-after-drawers nil)
@@ -235,11 +235,11 @@ With C-u, match the absolute path; otherwise match the basename."
                  (f (and m (org-with-point-at m (buffer-file-name))))
                  (key (and f (if fullpath f (file-name-nondirectory f)))))
             (if (and key (string-match-p regexp key))
-              (progn (setq n (1+ n))
-              (org-agenda-bulk-mark))
+		(progn (setq n (1+ n))
+		       (org-agenda-bulk-mark))
 	      (forward-line 1)
 	      ))
-        )))
+          )))
     (message "Marked %d entries (file ~ %s)" n regexp)))
 (with-eval-after-load 'org
   (defun my/org-save-after-refile (&rest _)
@@ -254,10 +254,11 @@ With C-u, match the absolute path; otherwise match the basename."
 (add-hook 'org-mode-hook #'org-modern-mode)
 
 (setq org-startup-indented t)
-;(use-package org-modern-indent
-;  :config
-;  (add-hook 'org-mode-hook #'org-modern-indent-mode 90)
-;  )
+					;(use-package org-modern-indent
+					;  :load-path "~/.emacs.d/org-modern-indent-main/"
+					;  :config
+					;  (add-hook 'org-mode-hook #'org-modern-indent-mode 90)
+					;  )
 
 (use-package org-roam)
 (setq org-roam-directory (file-truename "~/org/zettelkasten"))
@@ -267,41 +268,92 @@ With C-u, match the absolute path; otherwise match the basename."
   :after (citar org-roam)
   :config (citar-org-roam-mode))
 (setq citar-org-roam-note-title-template "${author} - ${title}")
+
+
+(defun my/citar-date-fragment ()
+  (if (and (boundp 'citar-date) citar-date)
+      "test"
+					;(format " (%s)" citar-date)
+    ""))
+
+
 (setq org-roam-capture-templates
-      '(("p" "project" plain
+      '(("p" "permanent" plain
          "%?"
          :target
          (file+head
-          "%<%Y%m%d%H%M%S>-${slug}.org"
-          "#+title: ${note-title}\n")
+          "permanent/${slug}.org"
+					;"#+title: ${title}\n")
+          "#+title: ${title}
+#+created: %U
+#+filetags: %(let* ((tags (completing-read-multiple
+                           \"Tags: \"
+                           (org-roam-tag-completions) nil))
+                    (s (string-join tags \":\")))
+               (if (string-empty-p s) \"\" (concat \":\" s \":\")))
+               \n\n\n")
          :unnarrowed t)
         ("n" "literature note" plain
          "%?"
          :target
          (file+head
           "%(expand-file-name (or citar-org-roam-subdir \"\") org-roam-directory)/literature/${citar-citekey}.org"
-          "#+title: ${citar-citekey} (${citar-date}). ${note-title}.\n#+created: %U\n\n\n")
+	  "#+title: ${citar-citekey} %(if (and (boundp 'citar-date) citar-date)
+                                (format \"(%s)\" citar-date)
+                              \"\") ${note-title}
+#+created: %U
+#+filetags: %(let* ((tags (completing-read-multiple
+                           \"Tags: \"
+                           (org-roam-tag-completions) nil))
+                    (s (string-join tags \":\")))
+               (if (string-empty-p s) \"\" (concat \":\" s \":\")))
+
+               \n\n\n")
+
          :unnarrowed t)))
 (setq citar-org-roam-capture-template-key "n")
 (setq org-roam-dailies-directory "daily/")
-;(use-package org-journal
-;  :bind
-;  ("C-c n j" . org-journal-new-entry)
-;  :custom
-;  (org-journal-date-prefix "#+title: ")
-;  (org-journal-file-format "%Y-%m-%d.org")
-;  (org-journal-dir (file-truename "~/org/zettelkasten/journal"))
-;  (org-journal-file-type 'daily)
-;  (org-journal-date-format "%A, %d %B %Y"))
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" plain
+         "* %<%H:%M>:\n%?"
+         :target (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n"))))
 
-;(defun my/org-journal-find-location ()
-  ;; Open today's journal, but specify a non-nil prefix argument in order to
-  ;; inhibit inserting the heading; org-capture will insert the heading.
-;  (org-journal-new-entry t)
-;  (unless (eq org-journal-file-type 'daily)
-;    (org-narrow-to-subtree))
-;  (goto-char (point-max)))
+(defun my/org-newline-same-indent ()
+  "Open a new line below with the same indentation, no list magic."
+  (interactive)
+  (let ((col (current-indentation)))
+    (end-of-line)
+    (insert "\n")
+    (indent-line-to col)
+    (evil-insert 1)
+    ))
 
-;(add-to-list 'org-capture-templates '("j" "Journal entry" plain (function my/org-journal-find-location)
-;                               "** %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
-;                                ))
+(with-eval-after-load 'org
+  (evil-define-key 'normal org-mode-map
+    (kbd "o") #'my/org-newline-same-indent))
+
+(defun my/org-roam-capture-permanent ()
+  (interactive)
+  (let* ((title (read-string "Title: "))
+	 (node  (org-roam-node-create)))
+    (setf (org-roam-node-title node) title)
+    (org-roam-capture- :node node :keys "p")
+    )
+  )
+(defun my/capture-dispatch ()
+  "Ein zentrales Capture-Menü für TODO, Roam, Daily etc."
+  (interactive)
+  (pcase (read-key "d: Daily p: Permanent  n: Roam-Note  d: Daily")
+    (?i (org-capture nil "i"))              ; z.B. Inbox
+    (?d (org-roam-dailies-capture-today))
+    (?p (my/org-roam-capture-permanent))                  ; <- direkt Roam-Template „p“
+    (?n (citar-open-notes))                  ; z.B. permanentes Note-Template „n)
+    ))
+
+(evil-define-key 'normal 'global (kbd "<leader>c") #'my/capture-dispatch)
+(evil-define-key 'normal 'global (kbd "<leader>od") #'org-roam-dailies-goto-today)
+(setq org-roam-tag-sources '(prop all-directories))
+
+(add-hook 'completion-at-point-functions #'org-roam-complete-link-at-point)
+(add-hook 'org-capture-mode-hook 'evil-insert-state)
