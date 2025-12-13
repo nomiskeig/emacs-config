@@ -124,7 +124,7 @@
   (:map vertico-map
 	("C-k" . vertico-previous)
 	("C-j" . vertico-next)
-	("c-i" . vertico-insert)
+	("C-i" . vertico-insert)
 	)
 
   :init
@@ -591,7 +591,7 @@
   :hook
   (org-mote . citar-capf-setup)
   :custom
-  (citar-bibliography '("~/org/notes/refs.bib"))
+  (citar-bibliography '("~/local_refs.bib"))
   (org-cite-insert-processor 'citar)
   (org-cite-follow-processor 'citar)
   (org-cite-activate-processor 'citar)

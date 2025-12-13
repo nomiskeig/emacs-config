@@ -262,7 +262,17 @@ With C-u, match the absolute path; otherwise match the basename."
 
 (use-package org-roam)
 (setq org-roam-directory (file-truename "~/org/zettelkasten"))
-(org-roam-db-autosync-mode)
+(with-eval-after-load 'org-roam
+  (org-roam-db-autosync-mode)
+
+
+  (add-to-list 'display-buffer-alist
+               '("\\*org-roam\\*"
+                 (display-buffer-in-side-window)
+                 (side . right)
+                 (window-width . 0.33))))
+
+
 
 (use-package citar-org-roam
   :after (citar org-roam)
@@ -354,6 +364,48 @@ With C-u, match the absolute path; otherwise match the basename."
 (evil-define-key 'normal 'global (kbd "<leader>c") #'my/capture-dispatch)
 (evil-define-key 'normal 'global (kbd "<leader>od") #'org-roam-dailies-goto-today)
 (setq org-roam-tag-sources '(prop all-directories))
+(defun my/org-roam-capf ()
+  (add-to-list 'completion-at-point-functions
+               #'org-roam-complete-link-at-point))
 
-(add-hook 'completion-at-point-functions #'org-roam-complete-link-at-point)
+(add-hook 'org-mode-hook #'my/org-roam-capf)
+
 (add-hook 'org-capture-mode-hook 'evil-insert-state)
+(evil-define-key 'normal 'org-mode-map (kbd "gd") #'org-open-at-point)
+(setq org-link-frame-setup
+      '((file . find-file)
+        (id   . find-file)
+        (http . browse-url)))
+(defcustom my/zotero-storage-dirs
+  (list
+   ;; adjust if your path differs
+   (expand-file-name "~/Zotero/storage/"))
+  "Candidate Zotero storage directories (must end with /storage/)."
+  :type '(repeat directory))
+
+(defun my/zotero-attachment-key-from-path (file)
+  "If FILE is in a Zotero storage dir, return the 8-char attachment key, else nil."
+  (let* ((f (expand-file-name file))
+         (match
+          (cl-loop for dir in my/zotero-storage-dirs
+                   for d = (file-name-as-directory (expand-file-name dir))
+                   when (string-prefix-p d f)
+                   return (substring f (length d)))))
+    (when (and match (string-match "\\`\\([A-Z0-9]\\{8\\}\\)/" match))
+      (match-string 1 match))))
+
+(defun my/open-file-in-zotero (file)
+  "Open PDF FILE. If it lives in Zotero storage, open via Zotero's internal PDF reader."
+  (let ((key (my/zotero-attachment-key-from-path file)))
+    (if key
+        (browse-url (format "zotero://open-pdf/library/items/%s" key))
+      ;; fallback: whatever you normally want
+      (call-process "xdg-open" nil 0 nil (expand-file-name file)))))
+
+;; Tell citar to use our opener for pdf files:
+(with-eval-after-load 'citar
+  (setf (alist-get "pdf" citar-file-open-functions nil nil #'string-equal)
+        #'my/open-file-in-zotero))
+(with-eval-after-load 'citar
+  (setf (alist-get "html" citar-file-open-functions nil nil #'string-equal)
+        #'my/open-file-in-zotero))
