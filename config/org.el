@@ -371,6 +371,7 @@ With C-u, match the absolute path; otherwise match the basename."
 (add-hook 'org-mode-hook #'my/org-roam-capf)
 
 (add-hook 'org-capture-mode-hook 'evil-insert-state)
+
 (evil-define-key 'normal 'org-mode-map (kbd "gd") #'org-open-at-point)
 (setq org-link-frame-setup
       '((file . find-file)

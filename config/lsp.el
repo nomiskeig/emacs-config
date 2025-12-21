@@ -51,13 +51,19 @@
 	 (lambda ()
 	   (lsp-ui-doc-hide)
 	   (remove-hook 'pre-command-hook lsp-ui-cleanup-fn t)))
-   (add-hook 'pre-command-hook lsp-ui-cleanup-fn t))
-   )
-(evil-define-key 'normal 'global (kbd "K") #'my/show-lsp-ui)
-(evil-define-key 'normal 'global (kbd "gi") #'lsp-find-implementation)
-(with-eval-after-load 'lsp-mode
-  (evil-define-key 'normal 'global (kbd "K") #'my/show-lsp-ui)
-  (evil-define-key 'normal 'global (kbd "<leader>la") #'lsp-execute-code-action))
+   (add-hook 'pre-command-hook lsp-ui-cleanup-fn t)))
+   
+(add-hook 'prog-mode-hook
+          (lambda ()
+	    (define-key evil-normal-state-local-map (kbd "gi") #'lsp-find-implementation)
+	    (define-key evil-normal-state-local-map (kbd "K") #'my/show-lsp-ui)
+	    (define-key evil-normal-state-local-map (kbd "<leader>la") #'lsp-execute-code-action)
+	    (define-key evil-normal-state-local-map (kbd "gd") #'lsp-find-definition)))
+;(evil-define-key 'normal 'prog-mode-map (kbd "K") #'my/show-lsp-ui)
+;(evil-define-key 'normal 'prog-mode-map (kbd "gi") #'lsp-find-implementation)
+;(evil-define-key 'normal 'prog-mode-map (kbd "K") #'my/show-lsp-ui)
+;(evil-define-key 'normal 'prog-mode-map (kbd "<leader>la") #'lsp-execute-code-action)
+;(evil-define-key 'normal 'prog-mode-map (kbd "gd") #'lsp-find-definition)
 ;; performance things
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb

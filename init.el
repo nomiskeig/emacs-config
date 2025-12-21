@@ -517,14 +517,15 @@
   :commands format-all-mode
   :config
   (setq-default format-all-formatters
-		'(("Rust"  (rustfmt)))))
+		'(("Rust"  (rustfmt)) ("C" (clang-format "-style=file"))))
+)
 
 (defun my/compile ()
   (interactive)
   (let* ((proj (project-current))
 	 (default-directory (project-root proj)))
     (call-interactively 'compile)))
-(evil-define-key 'normal 'global (kbd "<leader>lf") 'format-all-region-or-buffer)
+;(evil-define-key 'normal 'global (kbd "<leader>lf") 'format-all-region-or-buffer)
 
 (defun my/split-window-right ()
   (interactive)
@@ -615,3 +616,24 @@
 (global-visual-line-mode 1)
 
 (setq lsp-diagnostics-provider :flymake)
+
+(setq write-region-inhibit-fsync t)
+(setq tramp-use-ssh-controlmaster-options t)
+(defun my/format-all-tramp-use-remote-tmp ()
+"In TRAMP buffers, make format-all create temp files remotely so the formatter runs remotely."
+(when-let ((remote (file-remote-p default-directory)))
+    ;; Use /tmp on the remote host for temp files.
+    ;; This makes format-all's temp file remote, which makes process-file run remotely too.
+    (setq-local temporary-file-directory (concat remote "/tmp/"))))
+(add-hook 'c-ts-mode-hook #'my/format-all-tramp-use-remote-tmp)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(add-hook 'c-ts-mode-hook
+          (lambda ()
+            (setq c-ts-mode-indent-offset 4)))
+(add-hook 'c-ts-mode-hook
+          (lambda ()
+            (local-set-key (kbd "<leader>lf") #'lsp-format-buffer)))
+(add-hook 'rust-mode-hook
+          (lambda ()
+            (local-set-key (kbd "<leader>lf") #'lsp-format-buffer)))
