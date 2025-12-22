@@ -328,15 +328,21 @@
              '("\\*compilation\\*"
                (display-buffer-reuse-window display-buffer-at-bottom)
                (window-height . 0.3)
-               (inhbit-same-window . nil)
+               (inhibit-same-window . t)
                ))
 (add-to-list 'display-buffer-alist
              '("\\*xref\\*"
                (display-buffer-reuse-window display-buffer-at-bottom)
                (window-height . 0.3)
-               (inhbit-same-window . nil)
+               (inhibit-same-window . nil)
                ))
-
+(add-to-list 'display-buffer-alist
+             '("\\*Help\\*\\|\\*lsp-help\\*"
+               (display-buffer-in-side-window)
+               (side . right)
+               (slot . 0)
+               (window-width . 0.33)
+               (inhibit-same-window . t)))
 
 (add-hook 'compilation-start-hook
           (lambda (buf) (switch-to-buffer-other-window buf)))
@@ -358,7 +364,7 @@
   "Kill the function popup"
   (interactive)
   (message "called the kill function")
-  (Remove-hook 'pre-command-hook 'my/kill-function-popup t)
+  (remove-hook 'pre-command-hook 'my/kill-function-popup t)
   (posframe-delete name)
   )
 
@@ -494,9 +500,15 @@
 
 (evil-define-key 'normal compilation-mode-map
   (kbd "q") 'evil-window-delete)
-
+(defun my/compilation-next-error-no-split ()
+  "Wie `next-error`, aber öffnet keine neuen Fenster (kein Split)."
+  (interactive)
+  (let ((display-buffer-overriding-action
+         '((display-buffer-reuse-window display-buffer-use-some-window)
+           (inhibit-same-window . t))))
+    (next-error)))
 (evil-define-key 'normal compilation-mode-map
-  (kbd "n") 'next-error)
+  (kbd "n") 'my/compilation-next-error-no-split)
 (evil-define-key 'normal compilation-mode-map
   (kbd "p") 'previous-error)
 (load-directory "~/.emacs.d/config")
@@ -637,3 +649,5 @@
 (add-hook 'rust-mode-hook
           (lambda ()
             (local-set-key (kbd "<leader>lf") #'lsp-format-buffer)))
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-disabled-clients 'semgrep-ls))

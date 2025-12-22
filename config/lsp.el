@@ -1,4 +1,4 @@
-
+;; -*- lexical-binding: t; -*-
 (add-to-list 'major-mode-remap-alist '(cmake-mode . cmake-ts-mode))
 (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
 (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
@@ -37,19 +37,24 @@
                       :server-id 'neocmakels)))
 (use-package lsp-ui
   :ensure t)
-(setq lsp-ui-doc-delay 0)
-(setq lsp-ui-doc-position 'at-point)
-(setq lsp-ui-doc-show-with-mouse nil)
+;(setq lsp-ui-doc-delay 0)
+;(setq lsp-ui-doc-position 'at-point)
+;(setq lsp-ui-doc-show-with-mouse nil)
 ;(setq lsp-ui-doc-max-height 50)
 
 
 (defun my/show-lsp-ui ()
   (interactive)
-  (let ((lsp-ui-cleanup-fn t))
-   (lsp-ui-doc-show)
+  (let ((lsp-ui-cleanup-fn t)
+        (help-val help-window-select))
+    (setq help-window-select nil)
+   (lsp-describe-thing-at-point)
+   (setq help-window-select help-val)
    (setq lsp-ui-cleanup-fn
 	 (lambda ()
-	   (lsp-ui-doc-hide)
+	   (
+when (get-buffer "*lsp-help*")
+                             (kill-buffer "*lsp-help*"))
 	   (remove-hook 'pre-command-hook lsp-ui-cleanup-fn t)))
    (add-hook 'pre-command-hook lsp-ui-cleanup-fn t)))
    
