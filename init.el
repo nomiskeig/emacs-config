@@ -651,3 +651,4 @@
             (local-set-key (kbd "<leader>lf") #'lsp-format-buffer)))
 (with-eval-after-load 'lsp-mode
   (add-to-list 'lsp-disabled-clients 'semgrep-ls))
+(setq debug-on-error t)

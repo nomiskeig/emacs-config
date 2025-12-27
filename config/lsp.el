@@ -8,6 +8,7 @@
       '((cmake . ("https://github.com/uyha/tree-sitter-cmake"))
 	(c . ("https://github.com/tree-sitter/tree-sitter-c"))
 	(cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+    (python . ("https://github.com/tree-sitter/tree-sitter-python"))
 
 
 	)
@@ -18,6 +19,7 @@
   (cmake-ts-mode . lsp)
   (rust-mode . lsp)
   (c++-ts-mode . lsp)
+  (python-mode . lsp)
   :commands lsp
   :custom
   (lsp-enable-symbol-highlighting nil)
@@ -63,7 +65,11 @@ when (get-buffer "*lsp-help*")
 	    (define-key evil-normal-state-local-map (kbd "gi") #'lsp-find-implementation)
 	    (define-key evil-normal-state-local-map (kbd "K") #'my/show-lsp-ui)
 	    (define-key evil-normal-state-local-map (kbd "<leader>la") #'lsp-execute-code-action)
-	    (define-key evil-normal-state-local-map (kbd "gd") #'lsp-find-definition)))
+	    (define-key evil-normal-state-local-map (kbd "gd") #'lsp-find-definition)
+          (define-key evil-normal-state-local-map (kbd "gr") #'lsp-find-references)
+          (define-key evil-normal-state-local-map (kbd "gt") #'lsp-find-type-definition)
+          ))
+
 ;(evil-define-key 'normal 'prog-mode-map (kbd "K") #'my/show-lsp-ui)
 ;(evil-define-key 'normal 'prog-mode-map (kbd "gi") #'lsp-find-implementation)
 ;(evil-define-key 'normal 'prog-mode-map (kbd "K") #'my/show-lsp-ui)
@@ -72,7 +78,9 @@ when (get-buffer "*lsp-help*")
 ;; performance things
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
-(setq lsp-inlay-hint-enable t)
+;(setq lsp-inlay-hint-enable t)
 (add-hook 'lsp-mode-hook #'lsp-inlay-hints-mode)
+(add-hook 'python-mode-hook
+          (lambda () (lsp-inlay-hints-mode)))
 
 (setq lsp-rust-analyzer-display-parameter-hints t)

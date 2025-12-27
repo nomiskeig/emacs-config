@@ -27,8 +27,10 @@
     (kbd "j") #'org-agenda-next-line
     (kbd "k") #'org-agenda-previous-line
     (kbd "r") #'jethro/org-process-inbox
-    (kbd "d") #'org-agenda-kill
+    ;(kbd "d") #'org-agenda-kill
     (kbd "u") #'org-agenda-undo
+    (kbd "gd") #'org-agenda-switch-to
+    (kbd "gg") #'org-agenda-redo-all
     ))
 					;(kbd "gd") #'org-agenda-switch-to  ))
 
@@ -54,13 +56,12 @@
 (setq org-capture-templates
       `(("i" "Inbox" entry  (file "~/org/todo/inbox.org")
          ,(concat "* TODO %?\n"
-                  "/Entered on %U"))
-        ("s" "Slipbox" entry  (file "~/org/notes/inbox.org")
-         "* %?\n")))
+                  "Entered on %U"))
+         ))
 
 (setq org-tag-alist
       '((:startgroup . nil) ("@work" . ?w) ("@home" . ?h)
-	("@uni" . ?u) ("@errand" . ?e) (@read . ? ) (:endgroup . nil)))
+	("@uni" . ?u) ("@errand" . ?e) ("@read" . ?r ) (:endgroup . nil)))
 (setq org-agenda-files
       '("~/org/todo/" "~/org/notes/"))
 (setq org-refile-targets '(("next.org" :level . 0)
@@ -181,6 +182,10 @@
                ((org-agenda-overriding-header "One-off Tasks")
                 (org-agenda-files '(,(concat jethro/org-agenda-directory "next.org")))
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))
+         (todo "TODO"
+         ((org-agenda-overriding-header "To read")
+          (org-agenda-files '(,(concat jethro/org-agenda-directory "reading.org")))))
+
          nil)))
 (add-to-list 'org-agenda-custom-commands `,jethro/org-agenda-todo-view)
 (setq org-columns-default-format "%40ITEM(Task) %Effort(EE){:} %CLOCKSUM(Time Spent) %SCHEDULED(Scheduled) %DEADLINE(Deadline)")
@@ -212,7 +217,7 @@
       ;; (file-name-nondirectory (directory-file-name (file-name-directory (buffer-file-name)))))))
       (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
 
-(setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s") (todo . " %i %-20(my/agenda-todo-prefix)")
+(setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s") (todo . " %i %-20(my/agenda-todo-prefix) %s")
 				 (tags . " %i %-12:c") (search . " %i %-12:c")))
 (setq org-log-done 'time
       org-log-into-drawer t
