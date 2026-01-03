@@ -652,3 +652,7 @@
 (with-eval-after-load 'lsp-mode
   (add-to-list 'lsp-disabled-clients 'semgrep-ls))
 (setq debug-on-error t)
+(setq ispell-program-name "hunspell")
+(setq ispell-dictionary "en_US")
+
+(add-hook 'org-mode-hook #'flyspell-mode)

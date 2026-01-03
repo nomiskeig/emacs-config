@@ -53,11 +53,24 @@
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "|"
 		  "Cancelled(c)")))
+(defun my/capture-end-function ()
+  (when (and (not org-note-abort)
+             (string= (org-capture-get :key) "t") ; change "i" to your template key
+             (marker-buffer org-capture-last-stored-marker))
+    (with-current-buffer (marker-buffer org-capture-last-stored-marker)
+      (goto-char org-capture-last-stored-marker)
+      (org-refile))))
+(add-hook 'org-capture-after-finalize-hook #'my/capture-end-function)
 (setq org-capture-templates
       `(("i" "Inbox" entry  (file "~/org/todo/inbox.org")
          ,(concat "* TODO %?\n"
                   "Entered on %U"))
-         ))
+        ("s" "Slipbox" entry  (file "~/org/notes/inbox.org")
+         "* %?\n")
+        ("t" "Task" entry  (file "~/org/todo/inbox.org")
+         "* TODO %?\n
+Entered on %U"  )
+        ))
 
 (setq org-tag-alist
       '((:startgroup . nil) ("@work" . ?w) ("@home" . ?h)
@@ -301,7 +314,7 @@ With C-u, match the absolute path; otherwise match the basename."
 					;"#+title: ${title}\n")
           "#+title: ${title}
 #+created: %U
-#+filetags: %(let* ((tags (completing-read-multiple
+#+filetags: :permanent%(let* ((tags (completing-read-multiple
                            \"Tags: \"
                            (org-roam-tag-completions) nil))
                     (s (string-join tags \":\")))
@@ -317,15 +330,53 @@ With C-u, match the absolute path; otherwise match the basename."
                                 (format \"(%s)\" citar-date)
                               \"\") ${note-title}
 #+created: %U
-#+filetags: %(let* ((tags (completing-read-multiple
-                           \"Tags: \"
+#+filetags: :literature%(let* ((tags (completing-read-multiple
+                           \"Tags:  \"
                            (org-roam-tag-completions) nil))
                     (s (string-join tags \":\")))
                (if (string-empty-p s) \"\" (concat \":\" s \":\")))
 
                \n\n\n")
 
-         :unnarrowed t)))
+         :unnarrowed t)
+
+      ("c" "concept" plain
+       
+       "\n* Sources\n\n
+%?"
+         :target
+         (file+head
+          "concepts/${slug}.org"
+					;"#+title: ${title}\n")
+          "#+title: ${title}
+#+created: %U
+#+filetags: :concept%(let* ((tags (completing-read-multiple
+                           \"Tags:  \"
+                           (org-roam-tag-completions) nil))
+                    (s (string-join tags \":\")))
+               (if (string-empty-p s) \"\" (concat \":\" s \":\")))
+               \n\n\n")
+         :unnarrowed t)
+
+      ("s" "specific project" plain
+       
+       "%?"
+         :target
+         (file+head
+          "projects/${slug}.org"
+					;"#+title: ${title}\n")
+          "#+title: ${title}
+#+created: %U
+#+filetags: :projects%(let* ((tags (completing-read-multiple
+                           \"Tags:  \"
+                           (org-roam-tag-completions) nil))
+                    (s (string-join tags \":\")))
+               (if (string-empty-p s) \"\" (concat \":\" s \":\")))
+               \n\n\n")
+         :unnarrowed t)
+        ))
+(setq org-roam-node-display-template
+      (concat "${title:*}" (propertize "${tags:30}" 'face 'org-tag)))
 (setq citar-org-roam-capture-template-key "n")
 (setq org-roam-dailies-directory "daily/")
 (setq org-roam-dailies-capture-templates
@@ -356,14 +407,33 @@ With C-u, match the absolute path; otherwise match the basename."
     (org-roam-capture- :node node :keys "p")
     )
   )
+(defun my/org-roam-capture-concept ()
+  (interactive)
+  (let* ((title (read-string "Title: "))
+	 (node  (org-roam-node-create)))
+    (setf (org-roam-node-title node) title)
+    (org-roam-capture- :node node :keys "c")
+    )
+  )
+(defun my/org-roam-capture-project ()
+  (interactive)
+  (let* ((title (read-string "Title: "))
+	 (node  (org-roam-node-create)))
+    (setf (org-roam-node-title node) title)
+    (org-roam-capture- :node node :keys "s")
+    )
+  )
 (defun my/capture-dispatch ()
   "Ein zentrales Capture-Menü für TODO, Roam, Daily etc."
   (interactive)
-  (pcase (read-key "d: Daily p: Permanent  n: Roam-Note  d: Daily")
+  (pcase (read-key "d: Daily p: Permanent  n: Citar-Note  d: Daily i: Inbox c: Concept t: Task")
     (?i (org-capture nil "i"))              ; z.B. Inbox
     (?d (org-roam-dailies-capture-today))
     (?p (my/org-roam-capture-permanent))                  ; <- direkt Roam-Template „p“
+    (?c (my/org-roam-capture-concept))                  ; <- direkt Roam-Template „p“
+    (?s (my/org-roam-capture-project))
     (?n (citar-open-notes))                  ; z.B. permanentes Note-Template „n)
+    (?t (org-capture nil "t"))
     ))
 
 (evil-define-key 'normal 'global (kbd "<leader>c") #'my/capture-dispatch)
