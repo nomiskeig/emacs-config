@@ -315,13 +315,13 @@
   (evil-define-key 'normal dired-mode-map
     (kbd "x") #'dired-do-flagged-delete)
   (evil-define-key 'normal dired-mode-map
-    (kbd "u") #'dired-unmark
+    (kbd "u") #'dired-unmark)
     (evil-define-key 'normal dired-mode-map
       (kbd "g") #'revert-buffer)
     (evil-define-key 'normal dired-mode-map
       (kbd "r") #'dired-do-rename)
     (evil-define-key 'normal dired-mode-map
-      (kbd "a") #'find-file)))
+      (kbd "a") #'find-file))
 					;  (kbd "o") (message "pressed o")))
 
 (add-to-list 'display-buffer-alist
@@ -651,7 +651,7 @@
             (local-set-key (kbd "<leader>lf") #'lsp-format-buffer)))
 (with-eval-after-load 'lsp-mode
   (add-to-list 'lsp-disabled-clients 'semgrep-ls))
-(setq debug-on-error t)
+;(setq debug-on-error t)
 (setq ispell-program-name "hunspell")
 (setq ispell-dictionary "en_US")
 

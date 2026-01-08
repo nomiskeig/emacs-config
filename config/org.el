@@ -426,7 +426,7 @@ With C-u, match the absolute path; otherwise match the basename."
 (defun my/capture-dispatch ()
   "Ein zentrales Capture-Menü für TODO, Roam, Daily etc."
   (interactive)
-  (pcase (read-key "d: Daily p: Permanent  n: Citar-Note  d: Daily i: Inbox c: Concept t: Task")
+  (pcase (read-key "d: Daily p: Permanent  n: Citar-Note  d: Daily i: Inbox c: Concept t: Task s: Project")
     (?i (org-capture nil "i"))              ; z.B. Inbox
     (?d (org-roam-dailies-capture-today))
     (?p (my/org-roam-capture-permanent))                  ; <- direkt Roam-Template „p“
